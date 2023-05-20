@@ -8,6 +8,9 @@
 * Installez toutes les dépendances du projet : `npm install`
 * Démarrez le serveur Node.js : `nodemon server`
 
+## Update API
+* heroku restart
+
 
 ## ENDPOINT
 
