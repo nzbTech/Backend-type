@@ -5,7 +5,6 @@ const Model = 'Order'
 
 // CREATE PRODUCT //
 exports.createProduct = async (req, res, next) => {
-    const User = req.user
     if (req.body.title === "" || req.body.content === "")
         return res.status(400).json({ error: 'Merci de remplir tous les champs.' })
     try {
@@ -59,8 +58,6 @@ exports.deleteProduct = async (req, res, next) => {
 
 // GET ALL PRODUCTS //
 exports.getAllProducts = async (req, res, next) => {
-    const User = req.user
-    console.log('User =>', User)
     const filtre = await getfilter(req, Model)  
     try {
         const products = await models.Product.find(filtre)

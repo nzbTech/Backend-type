@@ -57,8 +57,13 @@ exports.deleteOrder = async (req, res, next) => {
 
 // GET ALL ORDERS //
 exports.getAllOrder = async (req, res, next) => {
+    const User = req.user
+    let query = {}
+    if (!User.isAdmin) {
+        query.user = User.id
+    }
     try {
-        const orders = await models.Order.find()
+        const orders = await models.Order.find(query)
         return res.status(200).json(orders)
     } catch (error) {
         return res.status(400).json({ error: error.message })
