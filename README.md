@@ -55,4 +55,19 @@ path parameters
 * `GET`localhost:3000/api/products/:id
     * Récupération d'un produit par :id
 
+### ORDERS
 
+* `POST`localhost:3000/api/orders/create
+    * Création d'une commande
+
+* `PATCH`localhost:3000/api/orders/update/:id
+    * Modification d'une commande
+
+* `DELETE`localhost:3000/api/orders/delete/:id
+    * Suppression d'une commande
+
+* `GET`localhost:3000/api/orders
+    * Récupération des commandes
+
+* `GET`localhost:3000/api/orders/:id
+    * Récupération d'une commande par :id

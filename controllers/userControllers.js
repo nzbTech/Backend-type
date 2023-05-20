@@ -22,18 +22,18 @@ exports.signup = async (req, res, next) => {
         if (!PASSWORD_REGEX.test(req.body.password))
             return res.status(401).json({ error: 'Minimum: 1 majuscule, 1 minuscule, 1 chiffre, 1 caractère (!.@#$%^&*)' })
 
-      const hash = await bcrypt.hash(req.body.password, 10)
-      let newUser = await models.User.create({
-        email: req.body.email,
-        name: req.body.name,
-        firstname: req.body.firstname,
-        password: hash,
-        isAdmin: true
-      })
-  
-      return res.status(201).json(newUser)
+        const hash = await bcrypt.hash(req.body.password, 10)
+        let newUser = await models.User.create({
+            email: req.body.email,
+            name: req.body.name,
+            firstname: req.body.firstname,
+            password: hash,
+            isAdmin: false
+        })
+
+        return res.status(201).json(newUser)
     } catch (error) {
-      return res.status(400).json({ error: 'Utilisateur non créé.' })
+        return res.status(400).json({ error: 'Utilisateur non créé.' })
     }
 }
 

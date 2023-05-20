@@ -1,7 +1,11 @@
 const models = require("../models/models")
+const { getfilter } = require("../middleware/filtre")
+const Model = 'Order'
+
 
 // CREATE PRODUCT //
 exports.createProduct = async (req, res, next) => {
+    const User = req.user
     if (req.body.title === "" || req.body.content === "")
         return res.status(400).json({ error: 'Merci de remplir tous les champs.' })
     try {
@@ -55,8 +59,11 @@ exports.deleteProduct = async (req, res, next) => {
 
 // GET ALL PRODUCTS //
 exports.getAllProducts = async (req, res, next) => {
+    const User = req.user
+    console.log('User =>', User)
+    const filtre = await getfilter(req, Model)  
     try {
-        const products = await models.Product.find()
+        const products = await models.Product.find(filtre)
         return res.status(200).json(products)
     } catch (error) {
         return res.status(400).json({ error: error.message })
