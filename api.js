@@ -30,11 +30,14 @@ router.get('/products/:id', auth, productControllers.getOneProduct)
 
 // orders //
 router.post('/orders/create', auth, orderControllers.createOrder)
+router.post('/orders/checkout/:id', auth, orderControllers.validOrder)
 router.patch('/orders/update/:id', auth, isAdmin, orderControllers.updateOrder)
 router.delete('/orders/delete/:id', auth, isAdmin, orderControllers.deleteOrder)
 router.get('/orders', auth, orderControllers.getAllOrder)
 router.get('/orders/:id', auth, orderControllers.getOneOrder)
 
-
+// STRIPE //
+router.post('/create-payment-intent', orderControllers.createPaymentIntents)
+router.post('/webhook', orderControllers.stripeWebHook)
 
 module.exports = router

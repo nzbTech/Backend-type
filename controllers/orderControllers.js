@@ -1,4 +1,6 @@
 const models = require("../models/models")
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY
+const stripe = require('stripe')(stripeSecretKey)
 
 // CREATE ORDER //
 exports.createOrder = async (req, res, next) => {
@@ -79,3 +81,121 @@ exports.getOneOrder = async (req, res, next) => {
         return res.status(400).json({ error: error.message })
     }
 }
+
+
+
+// const createUser = async (email, name) => {
+//     try {
+//       // Vérifier si l'utilisateur existe déjà dans Stripe
+//       let customer = await stripe.customers.list({ email: email, limit: 1 })
+//       if (customer.data.length > 0) {
+//         return customer.data[0]
+//       } else {
+//         customer = await stripe.customers.create({
+//             email: email,
+//             name: name
+//           })
+//         return customer
+//       }
+//     } catch (error) {
+//       throw error
+//     }
+// }
+
+// VALID ORDER //
+exports.validOrder = async (req, res, next) => {
+    const User = req.user
+    // let customer = await createUser(User.email, User.name)
+
+    try {
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: 50,
+            currency: "eur",
+            automatic_payment_methods: {
+              enabled: true,
+            },
+        })
+        console.log('paiement ==>', paymentIntent.id)
+        return res.status(200).json({ clientSecret: paymentIntent.client_secret })
+    } catch (error) {
+        console.error(error)
+        return res.status(500).send('Erreur lors du traitement du paiement.');
+    }
+}
+
+exports.createPaymentIntents = async (req, res, next) => {
+    try {
+        const { items, currency } = req.body;
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: 50,
+            currency: 'EUR',
+        })
+        console.log(' paymentIntent.client_secret ==>',  paymentIntent.client_secret)
+        return res.status(200).json(paymentIntent)
+    } catch (error) {
+        return res.status(400).json({ error: error.message })
+    }
+}
+
+exports.stripeWebHook = async (req, res, next) => {
+    let event;
+
+    try {
+        event = stripe.webhooks.constructEvent(request.body, request.headers['stripe-signature'], YOUR_STRIPE_WEBHOOK_SECRET);
+    } catch (err) {
+        return response.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    // Handle the event
+    switch (event.type) {
+        case 'payment_intent.succeeded':
+            const paymentIntent = event.data.object;
+            console.log('PaymentIntent was successful!');
+            break;
+        case 'payment_intent.payment_failed':
+            const paymentMethod = event.data.object;
+            console.log('PaymentIntent was failed!');
+            break;
+        default:
+            return response.status(400).end();
+    }
+
+    // Return a response to acknowledge receipt of the event
+    response.json({received: true});
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // // A FAIRE EN FRONT //
+    // const cardElement = {
+    //     type: 'card',
+    //     card: {
+    //       number: '4242424242424242',
+    //       exp_month: 12,
+    //       exp_year: 24,
+    //       cvc: '123'
+    //     }
+    // }
+    // let paymentMethod = null
+    // try {
+    //     paymentMethod = await stripe.paymentMethods.create({
+    //         type: 'card',
+    //         card: cardElement.card
+    //     })
+    //     return res.status(200).json(paymentMethod)
+    // } catch (error) {
+    //     return res.status(400).json({ error: error.message })
+    // }
+    // console.log('paymentMethod.id ==>', paymentMethod.id)
+    // // A FAIRE EN FRONT //
