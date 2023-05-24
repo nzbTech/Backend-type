@@ -1,6 +1,5 @@
 const models = require("../models/models")
 const { getfilter } = require("../middleware/filtre")
-const Model = 'Order'
 
 
 // CREATE PRODUCT //
@@ -58,10 +57,20 @@ exports.deleteProduct = async (req, res, next) => {
 
 // GET ALL PRODUCTS //
 exports.getAllProducts = async (req, res, next) => {
-    const filtre = await getfilter(req, Model)  
+    const { page, limit } = req.query
+    // Obtenir les éléments filtrés dans la table
+    const filtre = await getfilter(req, 'Product')  
     try {
+        // Obtenir le nombre total d'éléments filtrés dans la table
+        const totalItems = await models.Product.countDocuments(filtre)
+        const totalPages = Math.ceil(totalItems / limit)
+        
+        // Récupérer les données filtrées et paginées
         const products = await models.Product.find(filtre)
-        return res.status(200).json(products)
+          .skip((page - 1) * limit)
+          .limit(limit)
+    
+        return res.status(200).json({ products, totalItems, totalPages })
     } catch (error) {
         return res.status(400).json({ error: error.message })
     }

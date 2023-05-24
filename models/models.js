@@ -15,22 +15,24 @@ const productSchema = mongoose.Schema(
     {
         name: { type: String},
         price: { type: Number},
-        category: { 
-            type: String,
-            enum: ['Choix 1', 'Choix 2', 'Choix 3']
-        }
+        picture: { type: String},
+        category: { type: String}
+        // category: { 
+        //     type: String,
+        //     enum: ['Choix 1', 'Choix 2', 'Choix 3']
+        // },
     },
     { timestamps: true }
 )
 
 const orderSchema = mongoose.Schema(
     {
+        products: [productSchema],
+        total: { type: Number},
         user: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'users'
         },
-        products: [productSchema],
-        total: { type: Number},
     },
     { timestamps: true }
 )
