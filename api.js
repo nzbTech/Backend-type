@@ -25,8 +25,8 @@ router.get('/user/:id', auth, userControllers.getUser)
 router.post('/products/create', auth, isAdmin, productControllers.createProduct)
 router.patch('/products/update/:id', auth, isAdmin, productControllers.updateProduct)
 router.delete('/products/delete/:id', auth, isAdmin, productControllers.deleteProduct)
-router.get('/products', auth, productControllers.getAllProducts)
-router.get('/products/:id', auth, productControllers.getOneProduct)
+router.get('/products', productControllers.getAllProducts)
+router.get('/products/:id', productControllers.getOneProduct)
 
 // orders //
 router.post('/orders/create', auth, orderControllers.createOrder)
