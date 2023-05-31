@@ -55,6 +55,10 @@ exports.deleteProduct = async (req, res, next) => {
     }
 }
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 // GET ALL PRODUCTS //
 exports.getAllProducts = async (req, res, next) => {
     const { page, limit } = req.query
@@ -69,7 +73,8 @@ exports.getAllProducts = async (req, res, next) => {
         const products = await models.Product.find(filtre)
           .skip((page - 1) * limit)
           .limit(limit)
-    
+
+        //   await sleep(1000)
         return res.status(200).json({ products, totalItems, totalPages })
     } catch (error) {
         return res.status(400).json({ error: error.message })

@@ -149,19 +149,19 @@ exports.stripeWebHook = async (req, res, next) => {
     // Handle the event
     switch (event.type) {
         case 'payment_intent.succeeded':
-            const paymentIntent = event.data.object;
-            console.log('PaymentIntent was successful!');
-            break;
+            const paymentIntent = event.data.object
+            console.log('PaymentIntent was successful!')
+            break
         case 'payment_intent.payment_failed':
-            const paymentMethod = event.data.object;
-            console.log('PaymentIntent was failed!');
-            break;
+            const paymentMethod = event.data.object
+            console.log('PaymentIntent was failed!')
+            break
         default:
-            return response.status(400).end();
+            return response.status(400).end()
     }
 
     // Return a response to acknowledge receipt of the event
-    response.json({received: true});
+    response.json({received: true})
 }
 
 

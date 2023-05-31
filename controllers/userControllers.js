@@ -45,11 +45,11 @@ exports.login = async (req, res, next) => {
   
         const user = await models.User.findOne({ email: req.body.email })
         if (!user)
-            return res.status(404).json({ error: 'Utilisateur introuvable.' })
+            return res.status(404).json({ error: 'Adresse mail ou mot de passe incorrect.' })
   
         const valid = await bcrypt.compare(req.body.password, user.password)
         if (!valid)
-            return res.status(401).json({ error: 'Mot de passe incorrect.' })
+            return res.status(401).json({ error: 'Adresse mail ou mot de passe incorrect.' })
   
         return res.status(200).json({
             userId: user.id,
