@@ -79,7 +79,6 @@ const getfilter = (req) => {
       if (!filter[filterKey]) filter[filterKey] = {}
       filter[filterKey][filterOperator] = filterValue
     }
-    console.log('filtre =>', filter, sort)
     return { filter, sort }
 }
 
