@@ -45,14 +45,32 @@ const FILTER_MAP = {
       key: 'category', 
       operator: '$in', 
       transform: parseCategories 
+    },
+    sortByPrice: {
+        key: 'sort',
+        transform: (value) => {
+            if (value === 'desc') {
+                return { price: -1 };
+            } else if (value === 'asc') {
+                return { price: 1 };
+            } else {
+                return null;
+            }
+        }
     }
 }
 
 const getfilter = (req) => {
     const filter = {}
+    let sort = {}
     for (const [queryParam, filterConfig] of Object.entries(FILTER_MAP)) {
       const queryValue = req.query[queryParam]
       if (!queryValue) continue
+
+      if (filterConfig.key === 'sort') {
+        sort = filterConfig.transform(queryValue)
+        continue
+      }
   
       const filterKey = filterConfig.key
       const filterValue = filterConfig.transform ? filterConfig.transform(queryValue) : queryValue
@@ -61,8 +79,8 @@ const getfilter = (req) => {
       if (!filter[filterKey]) filter[filterKey] = {}
       filter[filterKey][filterOperator] = filterValue
     }
-    console.log('filtre =>', filter)
-    return filter
+    console.log('filtre =>', filter, sort)
+    return { filter, sort }
 }
 
 module.exports = { getfilter }

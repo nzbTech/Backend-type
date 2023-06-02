@@ -63,7 +63,7 @@ function sleep(ms) {
 exports.getAllProducts = async (req, res, next) => {
     const { page, limit } = req.query
     // Obtenir les éléments filtrés dans la table
-    const filtre = await getfilter(req, 'Product')  
+    const { filtre, sort } = await getfilter(req, 'Product')  
     try {
         // Obtenir le nombre total d'éléments filtrés dans la table
         const totalItems = await models.Product.countDocuments(filtre)
@@ -71,6 +71,7 @@ exports.getAllProducts = async (req, res, next) => {
         
         // Récupérer les données filtrées et paginées
         const products = await models.Product.find(filtre)
+          .sort(sort)
           .skip((page - 1) * limit)
           .limit(limit)
 
