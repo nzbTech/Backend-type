@@ -1,4 +1,5 @@
 require('dotenv').config()
+const morgan = require('morgan')
 const express = require("express")
 const bodyParser = require("body-parser")
 const api = require("./api")
@@ -25,6 +26,7 @@ app.use((req, res, next) => {
 })
 
 app.use(bodyParser.json())
+app.use(morgan(':method :url :status :response-time ms :date :referrer'))
 app.use("/api", api)
 
 

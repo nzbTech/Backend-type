@@ -63,9 +63,7 @@ function sleep(ms) {
 exports.getAllProducts = async (req, res, next) => {
     const { page, limit } = req.query
     // Obtenir les éléments filtrés dans la table
-    const { filter, sort } = await getfilter(req, 'Product')  
-    console.log('filtre =>', filter)
-    console.log('sortsort =>', sort)
+    const { filter, sort } = await getfilter(req, 'Product')
     try {
         // Obtenir le nombre total d'éléments filtrés dans la table
         const totalItems = await models.Product.countDocuments(filter)
