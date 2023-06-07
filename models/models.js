@@ -6,7 +6,9 @@ const userSchema = mongoose.Schema(
         name: { type: String},
         firstname: { type: String},
         password: { type: String},
-        isAdmin: {type: Boolean}
+        isAdmin: {type: Boolean},
+        resetToken: { type: String },
+        resetTokenExpiration: { type: Date }
     },
     { timestamps: true }
 )

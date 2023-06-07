@@ -20,6 +20,8 @@ router.post('/user/login', userControllers.login)
 router.delete('/user/delete/:id', auth, userControllers.deleteUser)
 router.patch('/user/update/:id', auth, userControllers.updateUser)
 router.get('/user/:id', auth, userControllers.getUser)
+router.post('/user/reset-password', userControllers.resetPassword)
+router.post('/user/reset-password/:id', userControllers.resetPasswordId)
 
 // products //
 router.post('/products/create', auth, isAdmin, productControllers.createProduct)

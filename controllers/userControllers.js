@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken")
+const nodemailer = require('nodemailer')
 const bcrypt = require("bcrypt")
 const models = require("../models/models")
 
@@ -130,5 +131,68 @@ exports.getUser = async (req, res, next) => {
         return res.status(200).json(userResponse)
     } catch (error) {
         return res.status(500).json({ error: error.message })
+    }
+}
+
+// GET USER //
+exports.resetPassword = async (req, res, next) => {
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'guillaumeleger430@gmail.com',
+          pass: 'jlwxbwjskqwvnwey'
+        }
+    })
+    const { email } = req.body
+
+    try {
+      const user = await  models.User.findOne({ email })
+      if (!user) {
+        return res.status(404).json({ message: 'Utilisateur non trouvé.' })
+      }
+      const resetToken = jwt.sign({ userId: user._id }, 'your_secret_key', { expiresIn: '1h' })
+  
+      user.resetToken = resetToken
+      user.resetTokenExpiration = Date.now() + 3600000 // 1 heure
+      await user.save()
+
+      const mailOptions = {
+        from: 'guillaumeleger430@gmail.com',
+        to: email,
+        subject: 'Réinitialisation du mot de passe',
+        html: `
+          <p>Veuillez cliquer sur le lien ci-dessous pour réinitialiser votre mot de passe :</p>
+          <a href="http://localhost:8080/#/reset-password/${resetToken}">Réinitialiser le mot de passe</a>
+        `
+      }
+  
+      await transporter.sendMail(mailOptions)
+      res.status(200).json({ message: 'Un e-mail de réinitialisation du mot de passe a été envoyé.' })
+    } catch (error) {
+      console.error('Une erreur est survenue lors de la réinitialisation du mot de passe:', error);
+      res.status(500).json({ message: 'Une erreur est survenue lors de la réinitialisation du mot de passe.' })
+    }
+}
+
+// GET USER //
+exports.resetPasswordId = async (req, res, next) => {
+    // const { token } = req.params
+    const { newPassword, token } = req.body
+    try {
+      const user = await  models.User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } })
+      if (!user) {
+        return res.status(404).json({ message: 'Token de réinitialisation du mot de passe invalide ou expiré.' })
+      }
+  
+      const hash = await bcrypt.hash(newPassword, 10)
+      user.password = hash
+      user.resetToken = undefined
+      user.resetTokenExpiration = undefined
+      await user.save();
+  
+      res.status(200).json({ message: 'Le mot de passe a été réinitialisé avec succès.' })
+    } catch (error) {
+      console.error('Une erreur est survenue lors de la réinitialisation du mot de passe:', error)
+      res.status(500).json({ message: 'Une erreur est survenue lors de la réinitialisation du mot de passe.' })
     }
 }
