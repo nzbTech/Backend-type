@@ -49,8 +49,19 @@ orderSchema.set('toJSON', {
     },
 })
 
+const promoSchema = mongoose.Schema(
+    {
+        name: { type: String},
+        percentage: { type: Number},
+        creator: { type: String},
+        used: { type: Number},
+    },
+    { timestamps: true }
+)
+
 module.exports = {
     User: mongoose.model('User', userSchema),
     Product: mongoose.model('Product', productSchema),
-    Order: mongoose.model('Order', orderSchema)
+    Order: mongoose.model('Order', orderSchema),
+    Promo: mongoose.model('Promo', promoSchema)
 }

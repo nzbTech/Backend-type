@@ -7,6 +7,7 @@ const homeControllers = require('./controllers/homeControllers')
 const userControllers = require('./controllers/userControllers')
 const productControllers = require('./controllers/productControllers')
 const orderControllers = require('./controllers/orderControllers')
+const promoControllers = require('./controllers/promoControllers')
 
 
 /// ROUTES ///
@@ -27,7 +28,7 @@ router.post('/user/reset-password/:id', userControllers.resetPasswordId)
 router.post('/products/create', auth, isAdmin, productControllers.createProduct)
 router.patch('/products/update/:id', auth, isAdmin, productControllers.updateProduct)
 router.delete('/products/delete/:id', auth, isAdmin, productControllers.deleteProduct)
-router.get('/products', productControllers.getAllProducts)
+router.get('/products', auth, productControllers.getAllProducts)
 router.get('/products/:id', productControllers.getOneProduct)
 
 // orders //
@@ -37,6 +38,14 @@ router.patch('/orders/update/:id', auth, isAdmin, orderControllers.updateOrder)
 router.delete('/orders/delete/:id', auth, isAdmin, orderControllers.deleteOrder)
 router.get('/orders', auth, orderControllers.getAllOrder)
 router.get('/orders/:id', auth, orderControllers.getOneOrder)
+
+// PROMO //
+router.post('/promo/create', auth, isAdmin, promoControllers.createPromo)
+router.patch('/promo/update/:id', auth, isAdmin, promoControllers.updatePromo)
+router.delete('/promo/delete/:id', auth, isAdmin, promoControllers.deletePromo)
+router.get('/promos', promoControllers.getAllPromos)
+router.get('/promo/:id', promoControllers.getOnePromo)
+router.post('/check-promo', promoControllers.checkPromo)
 
 // STRIPE //
 router.post('/create-payment-intent', orderControllers.createPaymentIntents)

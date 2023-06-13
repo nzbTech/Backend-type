@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken")
 const nodemailer = require('nodemailer')
 const bcrypt = require("bcrypt")
 const models = require("../models/models")
+const { userSchema } = require('../schemas/validationSchemas');
 
 const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!.@#$%^&*])(?=.{8,})/
@@ -51,12 +52,17 @@ exports.login = async (req, res, next) => {
         const valid = await bcrypt.compare(req.body.password, user.password)
         if (!valid)
             return res.status(401).json({ error: 'Adresse mail ou mot de passe incorrect.' })
-  
-        return res.status(200).json({
+        
+        userData = {
             userId: user.id,
-            name: user.name,
             firstname: user.firstname,
-            token: jwt.sign({ userId: user.id, isAdmin: user.isAdmin }, process.env.TOKEN_SECRET, { expiresIn: '24h'})
+            name: user.firstname,
+            email: user.firstname,
+            isAdmin: user.isAdmin,
+        }
+        console.log('userData =>', userData)
+        return res.status(200).json({
+            token: jwt.sign(userData , process.env.TOKEN_SECRET, { expiresIn: '24h'})
         })
     } catch (error) {
         return res.status(500).json({ error: error.message })
