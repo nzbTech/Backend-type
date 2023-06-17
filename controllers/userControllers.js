@@ -53,16 +53,15 @@ exports.login = async (req, res, next) => {
         if (!valid)
             return res.status(401).json({ error: 'Adresse mail ou mot de passe incorrect.' })
         
-        userData = {
-            userId: user.id,
-            firstname: user.firstname,
-            name: user.firstname,
-            email: user.firstname,
-            isAdmin: user.isAdmin,
-        }
-        console.log('userData =>', userData)
+        // userData = {
+        //     userId: user.id,
+        //     firstname: user.firstname,
+        //     name: user.firstname,
+        //     email: user.firstname,
+        //     isAdmin: user.isAdmin,
+        // }
         return res.status(200).json({
-            token: jwt.sign(userData , process.env.TOKEN_SECRET, { expiresIn: '24h'})
+            token: jwt.sign({ userId: user.id, isAdmin: user.isAdmin }, process.env.TOKEN_SECRET, { expiresIn: '24h'})
         })
     } catch (error) {
         return res.status(500).json({ error: error.message })

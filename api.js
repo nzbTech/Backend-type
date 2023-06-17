@@ -28,7 +28,7 @@ router.post('/user/reset-password/:id', userControllers.resetPasswordId)
 router.post('/products/create', auth, isAdmin, productControllers.createProduct)
 router.patch('/products/update/:id', auth, isAdmin, productControllers.updateProduct)
 router.delete('/products/delete/:id', auth, isAdmin, productControllers.deleteProduct)
-router.get('/products', auth, productControllers.getAllProducts)
+router.get('/products', productControllers.getAllProducts)
 router.get('/products/:id', productControllers.getOneProduct)
 
 // orders //
