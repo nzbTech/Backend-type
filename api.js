@@ -30,6 +30,7 @@ router.patch('/products/update/:id', auth, isAdmin, productControllers.updatePro
 router.delete('/products/delete/:id', auth, isAdmin, productControllers.deleteProduct)
 router.get('/products', productControllers.getAllProducts)
 router.get('/products/:id', productControllers.getOneProduct)
+router.post('/check-products', productControllers.checkProducts)
 
 // orders //
 router.post('/orders/create', auth, orderControllers.createOrder)

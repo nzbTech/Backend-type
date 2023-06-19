@@ -1,6 +1,7 @@
 const models = require("../models/models")
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY
 const stripe = require('stripe')(stripeSecretKey)
+const cryptoJS = require("crypto-js")
 
 // CREATE ORDER //
 exports.createOrder = async (req, res, next) => {
@@ -125,14 +126,19 @@ exports.validOrder = async (req, res, next) => {
 
 exports.createPaymentIntents = async (req, res, next) => {
     try {
-        const { items, currency } = req.body;
+        const { user, cart } = req.body
+        const cleCryptage = process.env.CRYPTO_SECRET
+        const decryptedBytes = cryptoJS.AES.decrypt(cart, cleCryptage)
+        const panierDecrypte = decryptedBytes.toString(cryptoJS.enc.Utf8)
+        console.log('user =>', user)
+        console.log('panierDecrypte =>', panierDecrypte)
         const paymentIntent = await stripe.paymentIntents.create({
             amount: 50,
             currency: 'EUR',
         })
-        console.log(' paymentIntent.client_secret ==>',  paymentIntent.client_secret)
         return res.status(200).json(paymentIntent)
     } catch (error) {
+        console.log('error =>', error)
         return res.status(400).json({ error: error.message })
     }
 }
