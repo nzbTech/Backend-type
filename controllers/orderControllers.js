@@ -2,6 +2,7 @@ const models = require("../models/models")
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY
 const stripe = require('stripe')(stripeSecretKey)
 const cryptoJS = require("crypto-js")
+const { getTotalPrice } = require("../middleware/function")
 
 // CREATE ORDER //
 exports.createOrder = async (req, res, next) => {
@@ -132,8 +133,11 @@ exports.createPaymentIntents = async (req, res, next) => {
         const panierDecrypte = decryptedBytes.toString(cryptoJS.enc.Utf8)
         console.log('user =>', user)
         console.log('panierDecrypte =>', panierDecrypte)
+
+        const panier = JSON.parse(panierDecrypte)
+        const amount = await getTotalPrice(panier)
         const paymentIntent = await stripe.paymentIntents.create({
-            amount: 50,
+            amount: amount,
             currency: 'EUR',
         })
         return res.status(200).json(paymentIntent)

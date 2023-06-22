@@ -95,14 +95,21 @@ exports.getOneProduct = async (req, res, next) => {
 // CHECK PRODUCTS //
 exports.checkProducts = async (req, res, next) => {
     const { cart } = req.body
-    const produitsId = cart.products.map(produit => produit.id)
     try {
-        const produitsExistants = await models.Product.find({ _id: { $in: produitsId } })
-        const produitsExistantIds = produitsExistants.map(produit => produit._id.toString())
-        cart.products = cart.products.filter(produit => produitsExistantIds.includes(produit.id))
+        const existingProducts = await models.Product.find({ _id: { $in: cart.products.map(product => product.id) } })
+        const checkedProducts = cart.products.filter(product => {
+            const existingProduct = existingProducts.find(p => p._id.toString() === product.id)
+            if (existingProduct) {
+                product.price = existingProduct.price
+                return true
+            }
+            return false
+        })
+        cart.products = checkedProducts
         return res.status(200).json(cart)
+
     } catch (error) {
-        console.log('e ==>', error)
+        console.log('error:', error);
         return res.status(400).json({ error: error.message })
     }
 }
