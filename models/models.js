@@ -2,11 +2,17 @@ const mongoose = require('mongoose')
 
 const userSchema = mongoose.Schema(
     {
-        email: { type: String},
-        name: { type: String},
-        firstname: { type: String},
-        password: { type: String},
-        isAdmin: {type: Boolean},
+        email: { type: String },
+        name: { type: String },
+        firstname: { type: String },
+        password: { type: String },
+        address: {
+            line: { type: String },
+            zip_code: { type: String },
+            city: { type: String },
+            country: { type: String }
+        },
+        isAdmin: {type: Boolean },
         resetToken: { type: String },
         resetTokenExpiration: { type: Date }
     },
@@ -15,10 +21,10 @@ const userSchema = mongoose.Schema(
 
 const productSchema = mongoose.Schema(
     {
-        name: { type: String},
-        price: { type: Number},
-        picture: { type: String},
-        category: { type: String}
+        name: { type: String },
+        price: { type: Number },
+        picture: { type: String },
+        category: { type: String }
         // category: { 
         //     type: String,
         //     enum: ['Choix 1', 'Choix 2', 'Choix 3']
@@ -30,7 +36,7 @@ const productSchema = mongoose.Schema(
 const orderSchema = mongoose.Schema(
     {
         products: [productSchema],
-        total: { type: Number},
+        total: { type: Number },
         user: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'users'
@@ -51,10 +57,10 @@ orderSchema.set('toJSON', {
 
 const promoSchema = mongoose.Schema(
     {
-        name: { type: String},
-        percentage: { type: Number},
-        creator: { type: String},
-        used: { type: Number},
+        name: { type: String },
+        percentage: { type: Number },
+        creator: { type: String },
+        used: { type: Number },
     },
     { timestamps: true }
 )
