@@ -131,8 +131,6 @@ exports.createPaymentIntents = async (req, res, next) => {
         const cleCryptage = process.env.CRYPTO_SECRET
         const decryptedBytes = cryptoJS.AES.decrypt(cart, cleCryptage)
         const panierDecrypte = decryptedBytes.toString(cryptoJS.enc.Utf8)
-        console.log('user =>', user)
-        console.log('panierDecrypte =>', panierDecrypte)
 
         const panier = JSON.parse(panierDecrypte)
         const amount = await getTotalPrice(panier)

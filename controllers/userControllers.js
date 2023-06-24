@@ -130,6 +130,7 @@ exports.getUser = async (req, res, next) => {
             email: user.email,
             name: user.name,
             firstname: user.firstname,
+            address:  user.address,
             isAdmin: user.isAdmin
         }
         
