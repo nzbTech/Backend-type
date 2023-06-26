@@ -6,14 +6,19 @@ const { getTotalPrice } = require("../middleware/function")
 
 // CREATE ORDER //
 exports.createOrder = async (req, res, next) => {
-    if (req.body.user === "" || req.body.products.length === 0)
+    const { cart } = req.body
+    if (req.body.user === "" || cart.products.length === 0)
         return res.status(400).json({ error: 'Merci de remplir tous les champs.' })
+
+    const { name, email, address } = req.body.user
+    const totalPrice = getTotalPrice(cart)
 
     try {
         const order = await models.Order.create({
-            user: req.body.user,
-            products: req.body.products,
-            total: req.body.total
+            user: { name, email, address },
+            products: cart.products,
+            promo: cart.promo.percentage,
+            total: totalPrice
         })
 
         return res.status(200).json(order)

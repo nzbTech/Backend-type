@@ -35,12 +35,17 @@ const productSchema = mongoose.Schema(
 
 const orderSchema = mongoose.Schema(
     {
-        products: [productSchema],
+        products: [{ type: Object }],
         total: { type: Number },
+        promo: { type: String },
         user: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'users'
-        },
+            type: Object,
+            properties: {
+                name: { type: String },
+                email: { type: String },
+                address: { type: Object }
+            }
+        }
     },
     { timestamps: true }
 )
@@ -52,6 +57,7 @@ orderSchema.set('toJSON', {
         delete product.updatedAt
         delete product._id
       })
+      delete ret.user.isAdmin
     },
 })
 

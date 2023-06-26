@@ -9,7 +9,6 @@ const getTotalPrice = (panier) => {
         amount = totalPrice
     }
     amount = Math.round(amount * 100)
-    console.log('salut =>')
     return amount
 }
 
