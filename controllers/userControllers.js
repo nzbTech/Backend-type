@@ -1,8 +1,7 @@
 const jwt = require("jsonwebtoken")
-const nodemailer = require('nodemailer')
 const bcrypt = require("bcrypt")
 const models = require("../models/models")
-const { userSchema } = require('../schemas/validationSchemas');
+const { getTransporterMail } = require("../middleware/function")
 
 const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!.@#$%^&*])(?=.{8,})/
@@ -142,13 +141,7 @@ exports.getUser = async (req, res, next) => {
 
 // GET USER //
 exports.resetPassword = async (req, res, next) => {
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: 'guillaumeleger430@gmail.com',
-          pass: 'jlwxbwjskqwvnwey'
-        }
-    })
+    const transporter = await getTransporterMail()
     const { email } = req.body
 
     try {

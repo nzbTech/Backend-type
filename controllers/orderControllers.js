@@ -2,7 +2,7 @@ const models = require("../models/models")
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY
 const stripe = require('stripe')(stripeSecretKey)
 const cryptoJS = require("crypto-js")
-const { getTotalPrice } = require("../middleware/function")
+const { getTotalPrice, templateOrder, getTransporterMail } = require("../middleware/function")
 
 // CREATE ORDER //
 exports.createOrder = async (req, res, next) => {
@@ -21,8 +21,19 @@ exports.createOrder = async (req, res, next) => {
             total: totalPrice
         })
 
+        let template = templateOrder(cart.products, totalPrice)
+        const transporter = await getTransporterMail()
+        const mailOptions = {
+            from: 'guillaumeleger430@gmail.com',
+            to: email,
+            subject: 'Confirmation de commande',
+            html: template
+        }
+        transporter.sendMail(mailOptions)
+
         return res.status(200).json(order)
     } catch (error) {
+        console.log('error =>', error)
         return res.status(400).json({ error: error.message })
     }
 }
@@ -30,7 +41,7 @@ exports.createOrder = async (req, res, next) => {
 // UPDATE ORDER //
 exports.updateOrder = async (req, res, next) => {
     try {
-        const { id } = req.params;
+        const { id } = req.params
         if (Object.keys(req.body).length === 0)
             return res.status(400).json({ error: 'Aucune donnée de mise à jour fournie.' })
 
@@ -88,26 +99,6 @@ exports.getOneOrder = async (req, res, next) => {
         return res.status(400).json({ error: error.message })
     }
 }
-
-
-
-// const createUser = async (email, name) => {
-//     try {
-//       // Vérifier si l'utilisateur existe déjà dans Stripe
-//       let customer = await stripe.customers.list({ email: email, limit: 1 })
-//       if (customer.data.length > 0) {
-//         return customer.data[0]
-//       } else {
-//         customer = await stripe.customers.create({
-//             email: email,
-//             name: name
-//           })
-//         return customer
-//       }
-//     } catch (error) {
-//       throw error
-//     }
-// }
 
 // VALID ORDER //
 exports.validOrder = async (req, res, next) => {
