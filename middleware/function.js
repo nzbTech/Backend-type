@@ -41,7 +41,7 @@ async function getTransporterMail() {
         service: 'gmail',
         auth: {
           user: 'guillaumeleger430@gmail.com',
-          pass: 'jlwxbwjskqwvnwey'
+          pass: process.env.GMAIL_PASS
         }
     })
     return transporter
